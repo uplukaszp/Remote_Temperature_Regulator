@@ -2,6 +2,7 @@
 .mvn
 mvnw
 mvnw.cmd
+settings.properties
 ### STS ###
 .apt_generated
 .classpath
