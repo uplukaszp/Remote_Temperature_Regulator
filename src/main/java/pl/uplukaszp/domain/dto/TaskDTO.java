@@ -13,4 +13,5 @@ public class TaskDTO {
 	private LocalTime time;
 	private DeviceState stateToSchedule;
 	private TaskType type;
+	private Float temperatureToSchedule;
 }

@@ -37,6 +37,7 @@ public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/console/**").permitAll();
  
         httpSecurity.csrf().disable();
+        httpSecurity.cors().disable();
         httpSecurity.headers().frameOptions().disable();
     }
     

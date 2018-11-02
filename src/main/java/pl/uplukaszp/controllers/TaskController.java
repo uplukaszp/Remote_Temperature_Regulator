@@ -33,7 +33,7 @@ public class TaskController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Task> scheduleSingle(@PathVariable String deviceId, @RequestBody @Valid TaskDTO task) {
+	public ResponseEntity<Task> schedule(@PathVariable String deviceId, @RequestBody @Valid TaskDTO task) {
 		Optional<Task> newTask = taskService.createTask(task, deviceId);
 		if (newTask.isPresent())
 			return new ResponseEntity<>(newTask.get(), HttpStatus.CREATED);
@@ -52,8 +52,8 @@ public class TaskController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Task>> getTasks() {
-		return new ResponseEntity<>(taskService.getTasks(), HttpStatus.OK);
+	public ResponseEntity<List<Task>> getTasks(@PathVariable String deviceId) {
+		return new ResponseEntity<>(taskService.getTasks(deviceId), HttpStatus.OK);
 	}
 
 	@GetMapping("/{taskId}")

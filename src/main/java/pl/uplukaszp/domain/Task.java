@@ -23,6 +23,7 @@ public class Task {
 	private DayOfWeek dayOfWeek;
 	private LocalTime time;
 	private DeviceState stateToSchedule;
+	private Float temperatureToSchedule;
 	private TaskType type;
 	@ManyToOne(optional=false)
 	@JsonBackReference

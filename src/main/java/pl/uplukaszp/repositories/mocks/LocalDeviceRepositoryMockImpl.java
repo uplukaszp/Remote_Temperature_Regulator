@@ -69,6 +69,7 @@ public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
 		Device d = repository.get(id);
 		DeviceParameters param = d.getInfo();
 		param.setSavedTemperature(temp);
+		param.setState(DeviceState.auto);
 		d.setInfo(param);
 		repository.put(id, d);
 		return Optional.of(param);
@@ -78,7 +79,7 @@ public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
 	public Optional<DeviceParameters> turnOn(String id) {
 		Device d = repository.get(id);
 		DeviceParameters param = d.getInfo();
-		param.setState(DeviceState.ON);
+		param.setState(DeviceState.on);
 		d.setInfo(param);
 		repository.put(id, d);
 		return Optional.of(param);
@@ -88,7 +89,7 @@ public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
 	public Optional<DeviceParameters> turnOff(String id) {
 		Device d = repository.get(id);
 		DeviceParameters param = d.getInfo();
-		param.setState(DeviceState.OFF);
+		param.setState(DeviceState.off);
 		d.setInfo(param);
 		repository.put(id, d);
 		return Optional.of(param);
@@ -100,8 +101,8 @@ public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
 		d.setName(device.getName());
 		DeviceParameters params = new DeviceParameters();
 		params.setCurrentTemperature((float) (Math.random() * 100));
-		params.setSavedTemperature(100f);
-		params.setState(DeviceState.OFF);
+		params.setSavedTemperature(0f);
+		params.setState(DeviceState.off);
 		d.setInfo(params);
 		repository.put(d.getId(), d);
 	}

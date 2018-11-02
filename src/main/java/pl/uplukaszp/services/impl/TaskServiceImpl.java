@@ -45,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
 			task.setStateToSchedule(newTask.getStateToSchedule());
 			task.setTime(newTask.getTime());
 			task.setType(newTask.getType());
+			task.setTemperatureToSchedule(newTask.getTemperatureToSchedule());
 			task = taskRepository.save(task);
 			return Optional.of(task);
 		}
@@ -57,8 +58,8 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public List<Task> getTasks() {
-		return taskRepository.findAll();
+	public List<Task> getTasks(String deviceId) {
+		return taskRepository.findByDeviceId(deviceId);
 	}
 
 }

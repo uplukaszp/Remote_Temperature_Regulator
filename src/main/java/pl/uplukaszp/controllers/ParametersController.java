@@ -40,12 +40,10 @@ public class ParametersController {
 		Optional<DeviceParameters> params = parametersService.turnOff(id);
 		return createResponse(params);
 	}
-
-	@PutMapping("/{id}/control/temperature")
-	public ResponseEntity<DeviceParameters> setTemperature(@PathVariable String id, @RequestBody @Valid TemperatureDTO temperature) {
+	@PutMapping("/{id}/control/auto")
+	public ResponseEntity<DeviceParameters> turnOnAuto(@PathVariable String id,@RequestBody @Valid TemperatureDTO temperature) {
 		Optional<DeviceParameters> params = parametersService.setTemperature(id, temperature.getTemperature());
 		return createResponse(params);
-
 	}
 
 	@GetMapping("/{id}/control/parameters")

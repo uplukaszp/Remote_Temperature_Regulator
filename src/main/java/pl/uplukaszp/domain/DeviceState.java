@@ -1,5 +1,5 @@
 package pl.uplukaszp.domain;
 
 public enum DeviceState {
-	ON, OFF,
+	on,off,auto
 }

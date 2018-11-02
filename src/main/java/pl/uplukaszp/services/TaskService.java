@@ -17,6 +17,6 @@ public interface TaskService {
 
 	Optional<Task> getTask(Long taskId);
 
-	List<Task> getTasks();
+	List<Task> getTasks(String deviceId);
 
 }

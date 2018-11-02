@@ -1,5 +1,6 @@
 package pl.uplukaszp.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +53,7 @@ public class DeviceServiceImpl implements DeviceService {
 		Device newDevice = new Device();
 		newDevice.setId(device.getId());
 		newDevice.setName(device.getName());
+		newDevice.setTasks(new ArrayList<>());
 		newDevice = deviceRepository.save(newDevice);
 		newDevice = addInfoToDevice(newDevice);
 		return newDevice;
