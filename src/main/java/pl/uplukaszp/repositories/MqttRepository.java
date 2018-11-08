@@ -11,7 +11,7 @@ import pl.uplukaszp.domain.DeviceParameters;
 import pl.uplukaszp.domain.projections.DeviceOnlyWithIdProjection;
 
 @Repository
-public interface LocalDeviceRepository {
+public interface MqttRepository {
 
 	List<DeviceOnlyWithIdProjection> findNewDevices();
 

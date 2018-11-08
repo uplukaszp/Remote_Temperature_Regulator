@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pl.uplukaszp.domain.Device;
 import pl.uplukaszp.domain.DeviceParameters;
-import pl.uplukaszp.repositories.LocalDeviceRepository;
+import pl.uplukaszp.repositories.MqttRepository;
 import pl.uplukaszp.services.DeviceService;
 import pl.uplukaszp.services.ParametersService;
 
@@ -17,9 +17,9 @@ import pl.uplukaszp.services.ParametersService;
 public class ParametersServiceImpl implements ParametersService {
 
 	private DeviceService deviceService;
-	private LocalDeviceRepository localDeviceRepository;
+	private MqttRepository localDeviceRepository;
 
-	public ParametersServiceImpl(@Lazy DeviceService deviceService, LocalDeviceRepository localDeviceRepository) {
+	public ParametersServiceImpl(@Lazy DeviceService deviceService, MqttRepository localDeviceRepository) {
 		super();
 		this.deviceService = deviceService;
 		this.localDeviceRepository = localDeviceRepository;

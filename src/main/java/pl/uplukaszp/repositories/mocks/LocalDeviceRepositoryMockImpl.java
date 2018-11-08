@@ -16,11 +16,11 @@ import pl.uplukaszp.domain.DeviceParameters;
 import pl.uplukaszp.domain.DeviceState;
 import pl.uplukaszp.domain.dto.DeviceDTO;
 import pl.uplukaszp.domain.projections.DeviceOnlyWithIdProjection;
-import pl.uplukaszp.repositories.LocalDeviceRepository;
+import pl.uplukaszp.repositories.MqttRepository;
 
 @Repository
 @Profile("development")
-public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
+public class LocalDeviceRepositoryMockImpl implements MqttRepository {
 
 	Map<String, Device> repository;
 	ProjectionFactory factory;
@@ -34,8 +34,8 @@ public class LocalDeviceRepositoryMockImpl implements LocalDeviceRepository {
 	@Override
 	public List<DeviceOnlyWithIdProjection> findNewDevices() {
 		List<DeviceOnlyWithIdProjection> devices = new ArrayList<>();
-		DeviceOnlyWithIdProjection d1 = factory.createProjection(DeviceOnlyWithIdProjection.class);
-		DeviceOnlyWithIdProjection d2 = factory.createProjection(DeviceOnlyWithIdProjection.class);
+		DeviceOnlyWithIdProjection d1 = new DeviceOnlyWithIdProjection();
+		DeviceOnlyWithIdProjection d2 = new DeviceOnlyWithIdProjection();
 		d1.setId("client-" + (int) (Math.random() * 100.0));
 		d2.setId("client-" + (int) (Math.random() * 100.0));
 		devices.add(d1);

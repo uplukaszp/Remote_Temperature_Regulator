@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.uplukaszp.domain.Device;
 import pl.uplukaszp.domain.dto.DeviceDTO;
 import pl.uplukaszp.repositories.DeviceRepository;
-import pl.uplukaszp.repositories.LocalDeviceRepository;
+import pl.uplukaszp.repositories.MqttRepository;
 import pl.uplukaszp.repositories.mocks.LocalDeviceRepositoryMockImpl;
 import pl.uplukaszp.services.ParametersService;
 import pl.uplukaszp.services.impl.DeviceServiceImpl;
@@ -15,15 +15,15 @@ import pl.uplukaszp.services.impl.DeviceServiceImpl;
 @Profile("development")
 public class DeviceServiceMockImpl extends DeviceServiceImpl {
 
-	private LocalDeviceRepositoryMockImpl mockLocalDeviceRepository;
-	public DeviceServiceMockImpl(DeviceRepository deviceRepository, LocalDeviceRepository localDeviceRepository,
-			ParametersService parametersService,LocalDeviceRepositoryMockImpl mockLocalDeviceRepository) {
+	private LocalDeviceRepositoryMockImpl mockMqttRepository;
+	public DeviceServiceMockImpl(DeviceRepository deviceRepository, MqttRepository localDeviceRepository,
+			ParametersService parametersService,LocalDeviceRepositoryMockImpl mockMqttRepository) {
 		super(deviceRepository, localDeviceRepository, parametersService);
-		this.mockLocalDeviceRepository=mockLocalDeviceRepository;
+		this.mockMqttRepository=mockMqttRepository;
 	}
 	@Override
 	public Device addDevice(DeviceDTO device) {
-		mockLocalDeviceRepository.addDev(device);
+		mockMqttRepository.addDev(device);
 		Device d=super.addDevice(device);
 		
 		return d;

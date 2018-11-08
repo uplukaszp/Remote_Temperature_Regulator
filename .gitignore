@@ -3,6 +3,7 @@
 mvnw
 mvnw.cmd
 settings.properties
+paho*
 ### STS ###
 .apt_generated
 .classpath
@@ -11,6 +12,7 @@ settings.properties
 .settings
 .springBeans
 .sts4-cache
+
 
 
 ### IntelliJ IDEA ###

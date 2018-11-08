@@ -13,7 +13,7 @@ import pl.uplukaszp.domain.DeviceParameters;
 import pl.uplukaszp.domain.dto.DeviceDTO;
 import pl.uplukaszp.domain.projections.DeviceOnlyWithIdProjection;
 import pl.uplukaszp.repositories.DeviceRepository;
-import pl.uplukaszp.repositories.LocalDeviceRepository;
+import pl.uplukaszp.repositories.MqttRepository;
 import pl.uplukaszp.services.DeviceService;
 import pl.uplukaszp.services.ParametersService;
 
@@ -21,13 +21,13 @@ import pl.uplukaszp.services.ParametersService;
 @Profile("!development")
 public class DeviceServiceImpl implements DeviceService {
 	DeviceRepository deviceRepository;
-	LocalDeviceRepository localDeviceRepository;
+	MqttRepository mqttRepository;
 	ParametersService parametersService;
 
-	public DeviceServiceImpl(DeviceRepository deviceRepository, LocalDeviceRepository localDeviceRepository,
+	public DeviceServiceImpl(DeviceRepository deviceRepository, MqttRepository localDeviceRepository,
 			ParametersService parametersService) {
 		this.deviceRepository = deviceRepository;
-		this.localDeviceRepository = localDeviceRepository;
+		this.mqttRepository = localDeviceRepository;
 		this.parametersService = parametersService;
 	}
 
@@ -72,7 +72,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Override
 	public List<DeviceOnlyWithIdProjection> findNewLocalDevices() {
-		return localDeviceRepository.findNewDevices();
+		return mqttRepository.findNewDevices();
 	}
 
 	private Optional<Device> addInfoToDevice(Optional<Device> device) {
