@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import pl.uplukaszp.components.MqttDataProvider;
 import pl.uplukaszp.domain.Device;
 import pl.uplukaszp.domain.DeviceParameters;
 import pl.uplukaszp.domain.DeviceState;
 import pl.uplukaszp.domain.projections.DeviceOnlyWithIdProjection;
 import pl.uplukaszp.repositories.MqttRepository;
-import pl.uplukaszp.repositories.components.MqttDataProvider;
 
 @Service
 @Profile("!development")

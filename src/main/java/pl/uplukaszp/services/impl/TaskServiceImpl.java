@@ -1,10 +1,12 @@
 package pl.uplukaszp.services.impl;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import pl.uplukaszp.components.TaskPlanner;
 import pl.uplukaszp.domain.Device;
 import pl.uplukaszp.domain.Task;
 import pl.uplukaszp.domain.dto.TaskDTO;
@@ -17,11 +19,13 @@ public class TaskServiceImpl implements TaskService {
 
 	private TaskRepository taskRepository;
 	private DeviceService deviceService;
+	private TaskPlanner taskPlanner;
 
-	public TaskServiceImpl(TaskRepository taskRepository, DeviceService deviceService) {
+	public TaskServiceImpl(TaskRepository taskRepository, DeviceService deviceService, TaskPlanner taskPlanner) {
 		this.taskRepository = taskRepository;
 		this.deviceService = deviceService;
-		
+		this.taskPlanner = taskPlanner;
+
 	}
 
 	@Override
@@ -29,24 +33,28 @@ public class TaskServiceImpl implements TaskService {
 		Optional<Task> task = taskRepository.findById(taskId);
 		if (task.isPresent()) {
 			taskRepository.delete(task.get());
+			taskPlanner.planNextTasks();
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Optional<Task> createTask(TaskDTO newTask,String deviceId) {
+	public Optional<Task> createTask(TaskDTO newTask, String deviceId) {
 		Task task = new Task();
 		Optional<Device> d = deviceService.getDevice(deviceId);
 		if (d.isPresent()) {
 			Device device = d.get();
 			task.setDevice(device);
-			task.setDayOfWeek(newTask.getDayOfWeek());
+			task.setDayOfWeek(DayOfWeek.of(newTask.getDayOfWeek().getValue()));
 			task.setStateToSchedule(newTask.getStateToSchedule());
 			task.setTime(newTask.getTime());
 			task.setType(newTask.getType());
 			task.setTemperatureToSchedule(newTask.getTemperatureToSchedule());
 			task = taskRepository.save(task);
+			taskPlanner.planNextTasks();
+			System.out.println("RECV: "+newTask.getDayOfWeek().getValue()+" saved: "+task.getDayOfWeek().getValue());
+
 			return Optional.of(task);
 		}
 		return Optional.empty();
@@ -59,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public List<Task> getTasks(String deviceId) {
+		taskPlanner.planNextTasks();
 		return taskRepository.findByDeviceId(deviceId);
 	}
 

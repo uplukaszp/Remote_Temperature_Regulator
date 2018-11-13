@@ -1,4 +1,4 @@
-package pl.uplukaszp.repositories.components;
+package pl.uplukaszp.components;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
-@Entity
+@Entity(name="TASK")
+@ToString(exclude = {"device"})
 public class Task {
 	@Id
 	@GeneratedValue
