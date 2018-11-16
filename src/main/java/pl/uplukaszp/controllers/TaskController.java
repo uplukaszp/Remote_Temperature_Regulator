@@ -38,7 +38,7 @@ public class TaskController {
 		if (newTask.isPresent())
 			return new ResponseEntity<>(newTask.get(), HttpStatus.CREATED);
 		else
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 	}
 
 	@DeleteMapping("/{taskId}")

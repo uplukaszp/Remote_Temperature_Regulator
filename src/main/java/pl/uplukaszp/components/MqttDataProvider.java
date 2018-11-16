@@ -2,17 +2,17 @@ package pl.uplukaszp.components;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttToken;
-import org.eclipse.paho.client.mqttv3.MqttTopic;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,14 +27,17 @@ import pl.uplukaszp.domain.projections.DeviceOnlyWithIdProjection;
 @Component
 public class MqttDataProvider {
 	ObjectMapper mapper = new ObjectMapper();
-	@Autowired
-	MqttClient client;
-	List<DeviceOnlyWithIdProjection> ids = new ArrayList<>();
-	Map<String, DeviceParameters> params = new HashMap<>();
-	StringBuilder lock = new StringBuilder();
 
-	public MqttDataProvider(MqttClient mqttClient) {
+	MqttClient client;
+	MqttClient client2;
+	Set<DeviceOnlyWithIdProjection> ids = new HashSet<>();
+	Map<String, DeviceParameters> params = new ConcurrentHashMap<>();
+	StringBuilder lock = new StringBuilder();
+	long t = 0;
+
+	public MqttDataProvider(MqttClient mqttClient, MqttClient mqttSecond) {
 		client = mqttClient;
+		client2 = mqttSecond;
 
 		try {
 			client.subscribeWithResponse("/devices/find/ids", recieveIds());
@@ -45,12 +48,19 @@ public class MqttDataProvider {
 	}
 
 	public List<DeviceOnlyWithIdProjection> getIds() {
-		return ids;
+		return new ArrayList<>(ids);
 	}
 
 	public Map<String, DeviceParameters> getParams(List<Device> devices) {
 		Map<String, DeviceParameters> map = new HashMap<>();
 		for (Device device : devices) {
+			DeviceParameters d = params.get(device.getId());
+			if (d == null) {
+				d = new DeviceParameters();
+				d.setCurrentTemperature(0f);
+				d.setSavedTemperature(0f);
+				d.setState(DeviceState.offline);
+			}
 			map.put(device.getId(), params.get(device.getId()));
 		}
 		return map;
@@ -72,7 +82,8 @@ public class MqttDataProvider {
 		MqttMessage message = new MqttMessage();
 		try {
 			message.setPayload(mapper.writeValueAsBytes(mode));
-			client.publish("/devices/" + id + "/mode", message);
+			System.out.println("mode update: " + mapper.writeValueAsString(mode));
+			client2.publish("/devices/" + id + "/mode", message);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {
@@ -83,10 +94,9 @@ public class MqttDataProvider {
 
 	@Scheduled(fixedRate = 5000)
 	private void refreshIds() {
-		ids.clear();
 		try {
 
-			client.publish("/devices/find", new MqttMessage());
+			client2.publish("/devices/find", new MqttMessage());
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +107,7 @@ public class MqttDataProvider {
 	private void refreshParams() {
 		try {
 
-			client.publish("/devices/info", new MqttMessage("ALL".getBytes()));
+			client2.publish("/devices/info", new MqttMessage("ALL".getBytes()));
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -117,11 +127,13 @@ public class MqttDataProvider {
 			String id = topic.replace("/devices/", "").replace("/info", "");
 			String messagePayload = new String(message.getPayload());
 			DeviceParameters param = mapper.readValue(messagePayload, DeviceParameters.class);
-
+			System.err.println("PARAM RECV" + id);
 			params.put(id, param);
+			System.err.println(System.currentTimeMillis() - t);
 			synchronized (lock) {
 				if (lock.toString().equals(id)) {
 					lock.notify();
+					System.err.println("UNLOCKED");
 				}
 			}
 		};
@@ -131,15 +143,25 @@ public class MqttDataProvider {
 		try {
 			synchronized (lock) {
 				params.remove(id);
+				t = System.currentTimeMillis();
+				System.out.println("WAIT FOR PARAMS: " + id);
 				lock.setLength(0);
 				lock.append(id);
 				lock.wait(5000);
 			}
-			return Optional.of(params.get(id));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		return Optional.empty();
+		Optional<DeviceParameters> p = Optional.ofNullable(params.get(id));
+		if (!p.isPresent()) {
+			DeviceParameters d = new DeviceParameters();
+			d.setCurrentTemperature(0f);
+			d.setSavedTemperature(0f);
+			d.setState(DeviceState.offline);
+			p=Optional.of(d);
+		}
+		System.out.println("Returning: " + p.get());
+		return p;
 	}
 }

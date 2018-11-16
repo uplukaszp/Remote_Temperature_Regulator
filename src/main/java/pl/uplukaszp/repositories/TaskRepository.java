@@ -1,6 +1,9 @@
 package pl.uplukaszp.repositories;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,5 +23,8 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 			+ "DATEADD('DAY_OF_WEEK',"
 			+ "CASE WHEN (ISO_DAY_OF_WEEK(CURRENT_DATE)=(DAY_OF_WEEK+1)) AND (CURRENT_TIME<TIME) THEN 0 ELSE (CASE WHEN ISO_DAY_OF_WEEK(CURRENT_DATE)>=DAY_OF_WEEK THEN (7-ABS(ISO_DAY_OF_WEEK(CURRENT_DATE)-DAY_OF_WEEK)) ELSE ABS(ISO_DAY_OF_WEEK(CURRENT_DATE)-DAY_OF_WEEK) END )END,CURRENT_DATE)))")
 	List<Task> findNearestTasks();
+
+
+	Optional<Task> findByDeviceIdAndDayOfWeekAndTime(String deviceId, DayOfWeek dayOfWeek, LocalTime time);
 
 }

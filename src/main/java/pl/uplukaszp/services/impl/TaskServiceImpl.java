@@ -43,7 +43,9 @@ public class TaskServiceImpl implements TaskService {
 	public Optional<Task> createTask(TaskDTO newTask, String deviceId) {
 		Task task = new Task();
 		Optional<Device> d = deviceService.getDevice(deviceId);
-		if (d.isPresent()) {
+		Optional<Task> t = taskRepository.findByDeviceIdAndDayOfWeekAndTime(deviceId, newTask.getDayOfWeek(),
+				newTask.getTime());
+		if (d.isPresent() && !t.isPresent()) {
 			Device device = d.get();
 			task.setDevice(device);
 			task.setDayOfWeek(DayOfWeek.of(newTask.getDayOfWeek().getValue()));
@@ -53,7 +55,8 @@ public class TaskServiceImpl implements TaskService {
 			task.setTemperatureToSchedule(newTask.getTemperatureToSchedule());
 			task = taskRepository.save(task);
 			taskPlanner.planNextTasks();
-			System.out.println("RECV: "+newTask.getDayOfWeek().getValue()+" saved: "+task.getDayOfWeek().getValue());
+			System.out.println(
+					"RECV: " + newTask.getDayOfWeek().getValue() + " saved: " + task.getDayOfWeek().getValue());
 
 			return Optional.of(task);
 		}
