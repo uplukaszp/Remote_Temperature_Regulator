@@ -1,9 +1,12 @@
 package pl.uplukaszp.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -72,7 +75,16 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Override
 	public List<DeviceOnlyWithIdProjection> findNewLocalDevices() {
-		return mqttRepository.findNewDevices();
+		List<DeviceOnlyWithIdProjection> localDevices=mqttRepository.findNewDevices();
+		Set<String>registredDevices=deviceRepository.findAllIds();
+		Iterator<DeviceOnlyWithIdProjection> it = localDevices.iterator();
+		while(it.hasNext()) {
+			DeviceOnlyWithIdProjection device=it.next();
+			if(registredDevices.contains(device.getId())) {
+				it.remove();
+			}
+		}
+		return localDevices;
 	}
 
 	private Optional<Device> addInfoToDevice(Optional<Device> device) {
