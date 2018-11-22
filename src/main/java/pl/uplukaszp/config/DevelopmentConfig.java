@@ -1,7 +1,5 @@
 package pl.uplukaszp.config;
 
-
-
 import org.h2.server.web.WebServlet;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,14 +9,17 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 
 @Configuration
 @Profile("development")
-@Order(value=Ordered.HIGHEST_PRECEDENCE)
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
-	
+
 	@Bean
 	public ProjectionFactory projectionFactory() {
 		return new SpelAwareProxyProjectionFactory();
@@ -30,16 +31,18 @@ public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
 		registrationBean.addUrlMappings("/console/*");
 		return registrationBean;
 	}
-	
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests().antMatchers("/").permitAll().and()
-                .authorizeRequests().antMatchers("/console/**").permitAll();
- 
-        httpSecurity.csrf().disable();
-        httpSecurity.cors().disable();
-        httpSecurity.headers().frameOptions().disable();
-    }
-    
-  
+
+	@Override
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.authorizeRequests().antMatchers("/console/**").permitAll();
+		httpSecurity.cors().and().csrf().disable();
+		httpSecurity.headers().frameOptions().disable();
+		httpSecurity.authorizeRequests().anyRequest().authenticated().and().httpBasic();
+		httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().withUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+	}
 }
