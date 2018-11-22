@@ -31,6 +31,7 @@ public class TaskPlanner {
 		List<Task> tasks = taskRepository.findNearestTasks();
 		if (!tasks.isEmpty()) {
 			try {
+				scheduler.shutdown();
 				JobDetail job = JobBuilder.newJob(TaskToExecute.class).withIdentity(tasks.get(0).getId().toString())
 						.build();
 				job.getJobDataMap().put("task", tasks.get(0).getId());

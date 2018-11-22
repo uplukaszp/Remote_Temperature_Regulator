@@ -101,4 +101,9 @@ public class DeviceServiceImpl implements DeviceService {
 	public boolean deviceIsRegistred(String id) {
 		return deviceRepository.findById(id).isPresent();
 	}
+
+	@Override
+	public boolean existDeviceWithName(String name) {
+		return deviceRepository.findByName(name).isPresent();
+	}
 }

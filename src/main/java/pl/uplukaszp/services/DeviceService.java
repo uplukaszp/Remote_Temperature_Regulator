@@ -25,4 +25,6 @@ public interface DeviceService {
 	List<Device> getDevicesWithoutInfo();
 
 	boolean deviceIsRegistred(String id);
+
+	boolean existDeviceWithName(String name);
 }
