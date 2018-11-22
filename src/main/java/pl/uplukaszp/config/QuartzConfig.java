@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
+import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,14 +24,12 @@ public class QuartzConfig {
 
 	@Bean
 	public SchedulerFactoryBean schedulerFactoryBean(@Autowired DataSource dataSource, @Autowired JobFactory jobFactory)
-			throws IOException {
+			throws IOException, SchedulerException {
 		SchedulerFactoryBean factory = new SchedulerFactoryBean();
 		factory.setOverwriteExistingJobs(true);
 		factory.setAutoStartup(true);
 		factory.setDataSource(dataSource);
-		// This is the place where we will wire Quartz and Spring together
 		factory.setJobFactory(jobFactory);
-		// factory.setTriggers(triggers);
 		return factory;
 	}
 }

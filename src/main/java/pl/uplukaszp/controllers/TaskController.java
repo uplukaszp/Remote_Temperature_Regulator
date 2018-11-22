@@ -33,10 +33,10 @@ public class TaskController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Task> schedule(@PathVariable String deviceId, @RequestBody @Valid TaskDTO task) {
+	public ResponseEntity<List<Task>> schedule(@PathVariable String deviceId, @RequestBody @Valid TaskDTO task) {
 		Optional<Task> newTask = taskService.createTask(task, deviceId);
 		if (newTask.isPresent())
-			return new ResponseEntity<>(newTask.get(), HttpStatus.CREATED);
+			return new ResponseEntity<>(taskService.getTasks(deviceId), HttpStatus.CREATED);
 		else
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 	}

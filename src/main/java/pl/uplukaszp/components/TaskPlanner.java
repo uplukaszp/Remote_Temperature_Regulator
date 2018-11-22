@@ -26,19 +26,20 @@ public class TaskPlanner {
 		this.taskRepository = taskRepository;
 		this.scheduler = scheduler;
 	}
-	
+
 	public void planNextTasks() {
 		List<Task> tasks = taskRepository.findNearestTasks();
 		if (!tasks.isEmpty()) {
 			try {
-				scheduler.shutdown();
+				scheduler.clear();
 				JobDetail job = JobBuilder.newJob(TaskToExecute.class).withIdentity(tasks.get(0).getId().toString())
 						.build();
 				job.getJobDataMap().put("task", tasks.get(0).getId());
 				CronExpression cronExpression = createCron(tasks.get(0));
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity(tasks.get(0).getId().toString())
 						.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
-				scheduler.start();
+				if (!scheduler.isStarted())
+					scheduler.start();
 				scheduler.scheduleJob(job, trigger);
 			} catch (SchedulerException e) {
 				// TODO Auto-generated catch block
