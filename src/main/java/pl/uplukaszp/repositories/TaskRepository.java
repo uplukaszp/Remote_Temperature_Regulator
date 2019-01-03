@@ -24,7 +24,6 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 			+ "CASE WHEN (ISO_DAY_OF_WEEK(CURRENT_DATE)=(DAY_OF_WEEK+1)) AND (CURRENT_TIME<TIME) THEN 0 ELSE (CASE WHEN ISO_DAY_OF_WEEK(CURRENT_DATE)>=DAY_OF_WEEK THEN (7-ABS(ISO_DAY_OF_WEEK(CURRENT_DATE)-DAY_OF_WEEK)) ELSE ABS(ISO_DAY_OF_WEEK(CURRENT_DATE)-DAY_OF_WEEK) END )END,CURRENT_DATE)))")
 	List<Task> findNearestTasks();
 
-
 	Optional<Task> findByDeviceIdAndDayOfWeekAndTime(String deviceId, DayOfWeek dayOfWeek, LocalTime time);
 
 }

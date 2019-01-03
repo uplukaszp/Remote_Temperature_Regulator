@@ -82,7 +82,6 @@ public class MqttDataProvider {
 		MqttMessage message = new MqttMessage();
 		try {
 			message.setPayload(mapper.writeValueAsBytes(mode));
-			System.out.println("mode update: " + mapper.writeValueAsString(mode));
 			client2.publish("/devices/" + id + "/mode", message);
 		} catch (MqttException e) {
 			e.printStackTrace();
@@ -127,13 +126,11 @@ public class MqttDataProvider {
 			String id = topic.replace("/devices/", "").replace("/info", "");
 			String messagePayload = new String(message.getPayload());
 			DeviceParameters param = mapper.readValue(messagePayload, DeviceParameters.class);
-			System.err.println("PARAM RECV" + id);
 			params.put(id, param);
 			System.err.println(System.currentTimeMillis() - t);
 			synchronized (lock) {
 				if (lock.toString().equals(id)) {
 					lock.notify();
-					System.err.println("UNLOCKED");
 				}
 			}
 		};
@@ -144,7 +141,6 @@ public class MqttDataProvider {
 			synchronized (lock) {
 				params.remove(id);
 				t = System.currentTimeMillis();
-				System.out.println("WAIT FOR PARAMS: " + id);
 				lock.setLength(0);
 				lock.append(id);
 				lock.wait(5000);

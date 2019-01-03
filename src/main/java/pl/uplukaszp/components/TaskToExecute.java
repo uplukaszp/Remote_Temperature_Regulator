@@ -35,8 +35,9 @@ public class TaskToExecute implements Job {
 		System.out.println(t.toString());
 		switch (t.getStateToSchedule()) {
 		case auto:
-		case on:
 			repository.setTemperature(t.getDevice().getId(), t.getTemperatureToSchedule());
+		case on:
+			repository.turnOn(t.getDevice().getId());
 			break;
 		case off:
 			repository.turnOff(t.getDevice().getId());

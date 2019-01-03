@@ -28,10 +28,11 @@ public class TaskController {
 
 	private TaskService taskService;
 
-	public TaskController(TaskService taskService, DeviceService deviceService) {
+	public TaskController(TaskService taskService) {
 		this.taskService = taskService;
 	}
 
+	// TODO return not found
 	@PostMapping
 	public ResponseEntity<List<Task>> schedule(@PathVariable String deviceId, @RequestBody @Valid TaskDTO task) {
 		Optional<Task> newTask = taskService.createTask(task, deviceId);
@@ -51,6 +52,7 @@ public class TaskController {
 
 	}
 
+	// TODO return not found
 	@GetMapping
 	public ResponseEntity<List<Task>> getTasks(@PathVariable String deviceId) {
 		return new ResponseEntity<>(taskService.getTasks(deviceId), HttpStatus.OK);

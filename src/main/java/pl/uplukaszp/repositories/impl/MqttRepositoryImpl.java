@@ -39,18 +39,18 @@ public class MqttRepositoryImpl implements MqttRepository {
 
 	@Override
 	public Optional<DeviceParameters> turnOn(String id) {
-		return dataProvider.setMode(DeviceState.on,id);
+		return dataProvider.setMode(DeviceState.on, id);
 	}
 
 	@Override
 	public Optional<DeviceParameters> turnOff(String id) {
-		return dataProvider.setMode(DeviceState.off,id);
+		return dataProvider.setMode(DeviceState.off, id);
 
 	}
 
 	@Override
 	public Optional<DeviceParameters> setTemperature(String id, Float temp) {
-		return dataProvider.setMode(DeviceState.auto,id,temp);
+		return dataProvider.setMode(DeviceState.auto, id, temp);
 
 	}
 

@@ -38,10 +38,14 @@ public class ParametersController {
 	@PutMapping("/{id}/control/off")
 	public ResponseEntity<DeviceParameters> turnOff(@PathVariable String id) {
 		Optional<DeviceParameters> params = parametersService.turnOff(id);
-		return createResponse(params);
+		ResponseEntity<DeviceParameters> responseEntity = createResponse(params);
+		System.out.println(responseEntity + " " + responseEntity.getBody());
+		return responseEntity;
 	}
+
 	@PutMapping("/{id}/control/auto")
-	public ResponseEntity<DeviceParameters> turnOnAuto(@PathVariable String id,@RequestBody @Valid TemperatureDTO temperature) {
+	public ResponseEntity<DeviceParameters> turnOnAuto(@PathVariable String id,
+			@RequestBody @Valid TemperatureDTO temperature) {
 		Optional<DeviceParameters> params = parametersService.setTemperature(id, temperature.getTemperature());
 		return createResponse(params);
 	}

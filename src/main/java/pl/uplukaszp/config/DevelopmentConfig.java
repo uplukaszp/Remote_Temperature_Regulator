@@ -1,6 +1,9 @@
 package pl.uplukaszp.config;
 
+import java.sql.SQLException;
+
 import org.h2.server.web.WebServlet;
+import org.h2.tools.Server;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +22,8 @@ import org.springframework.security.core.userdetails.User;
 @Profile("development")
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
+	private static final String username = "user";
+	private static final String password = "password";
 
 	@Bean
 	public ProjectionFactory projectionFactory() {
@@ -32,6 +37,11 @@ public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
 		return registrationBean;
 	}
 
+	@Bean(initMethod = "start", destroyMethod = "stop")
+	public Server h2Server() throws SQLException {
+		return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+	}
+
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests().antMatchers("/console/**").permitAll();
@@ -43,6 +53,7 @@ public class DevelopmentConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+		auth.inMemoryAuthentication().withUser(
+				User.withDefaultPasswordEncoder().username(username).password(password).roles("USER").build());
 	}
 }

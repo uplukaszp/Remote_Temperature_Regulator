@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.stereotype.Repository;
@@ -20,12 +19,12 @@ import pl.uplukaszp.repositories.MqttRepository;
 
 @Repository
 @Profile("development")
-public class LocalDeviceRepositoryMockImpl implements MqttRepository {
+public class MqttRepositoryMockImpl implements MqttRepository {
 
 	Map<String, Device> repository;
 	ProjectionFactory factory;
 
-	public LocalDeviceRepositoryMockImpl(ProjectionFactory factory) {
+	public MqttRepositoryMockImpl(ProjectionFactory factory) {
 
 		this.factory = factory;
 		repository = new HashMap<>();
@@ -63,7 +62,6 @@ public class LocalDeviceRepositoryMockImpl implements MqttRepository {
 			return Optional.empty();
 	}
 
-	
 	@Override
 	public Optional<DeviceParameters> setTemperature(String id, Float temp) {
 		Device d = repository.get(id);

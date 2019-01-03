@@ -3,7 +3,6 @@ package pl.uplukaszp.domain;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,8 +14,8 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@Entity(name="TASK")
-@ToString(exclude = {"device"})
+@Entity(name = "TASK")
+@ToString(exclude = { "device" })
 public class Task {
 	@Id
 	@GeneratedValue
@@ -27,7 +26,7 @@ public class Task {
 	private DeviceState stateToSchedule;
 	private Float temperatureToSchedule;
 	private TaskType type;
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	@JsonBackReference
 	private Device device;
 

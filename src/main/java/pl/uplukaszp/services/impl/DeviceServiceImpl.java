@@ -75,12 +75,12 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Override
 	public List<DeviceOnlyWithIdProjection> findNewLocalDevices() {
-		List<DeviceOnlyWithIdProjection> localDevices=mqttRepository.findNewDevices();
-		Set<String>registredDevices=deviceRepository.findAllIds();
+		List<DeviceOnlyWithIdProjection> localDevices = mqttRepository.findNewDevices();
+		Set<String> registredDevices = deviceRepository.findAllIds();
 		Iterator<DeviceOnlyWithIdProjection> it = localDevices.iterator();
-		while(it.hasNext()) {
-			DeviceOnlyWithIdProjection device=it.next();
-			if(registredDevices.contains(device.getId())) {
+		while (it.hasNext()) {
+			DeviceOnlyWithIdProjection device = it.next();
+			if (registredDevices.contains(device.getId())) {
 				it.remove();
 			}
 		}

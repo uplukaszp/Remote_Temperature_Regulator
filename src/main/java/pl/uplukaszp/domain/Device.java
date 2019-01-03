@@ -22,9 +22,9 @@ public class Device {
 	@Column(nullable = false, unique = true)
 	private String name;
 	@OneToMany
-	@JoinColumn(name="DEVICE_ID")
+	@JoinColumn(name = "DEVICE_ID")
 	@JsonManagedReference
 	private List<Task> tasks;
-	@Transient 
+	@Transient
 	private DeviceParameters info;
 }

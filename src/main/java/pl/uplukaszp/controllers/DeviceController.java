@@ -51,7 +51,7 @@ public class DeviceController {
 		if (errors.hasErrors()) {
 			return ResponseEntity.badRequest().build();
 		}
-		if (deviceService.deviceIsRegistred(device.getId())||deviceService.existDeviceWithName(device.getName())) {
+		if (deviceService.deviceIsRegistred(device.getId()) || deviceService.existDeviceWithName(device.getName())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		Device newDevice = deviceService.addDevice(device);
